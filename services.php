@@ -2,11 +2,11 @@
 require_once 'includes/auth.php';
 require_once 'includes/db.php';
 
-// Fetch all categories for filter buttons
+
 $categories_stmt = $pdo->query("SELECT * FROM categories");
 $categories = $categories_stmt->fetchAll();
 
-// Build dynamic query for services based on search and category filter
+
 $category_filter = isset($_GET['category']) ? sanitizeInput($_GET['category']) : '';
 $search_query = isset($_GET['search']) ? sanitizeInput($_GET['search']) : '';
 
@@ -61,7 +61,6 @@ $services = $services_stmt->fetchAll();
                 </form>
             </div>
 
-            <!-- Categories Horizontal Filter List -->
             <div class="services-filter">
                 <a href="services.php?search=<?php echo urlencode($search_query); ?>" 
                    class="filter-btn <?php echo empty($category_filter) ? 'active' : ''; ?>">
@@ -75,7 +74,6 @@ $services = $services_stmt->fetchAll();
                 <?php endforeach; ?>
             </div>
 
-            <!-- Services Grid -->
             <div class="grid">
                 <?php if (empty($services)): ?>
                     <div style="grid-column: 1/-1; text-align: center; padding: 4rem 1.5rem; background-color: var(--white); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">

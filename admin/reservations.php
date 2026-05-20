@@ -2,13 +2,13 @@
 require_once '../includes/auth.php';
 require_once '../includes/db.php';
 
-// Route protection
+
 requireAdmin();
 
 $success = '';
 $error = '';
 
-// Handle Status Updates
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
     $reservation_id = (int)$_POST['reservation_id'];
     $status = sanitizeInput($_POST['status'] ?? '');
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
     }
 }
 
-// Fetch all reservations in the system
+
 $reservations_stmt = $pdo->query("
     SELECT r.*, u.name as user_name, u.email as user_email, u.phone as user_phone, 
            s.title as service_title, s.price as service_price
@@ -56,7 +56,6 @@ $reservations = $reservations_stmt->fetchAll();
     <main class="main-content">
         <div class="container">
             <div class="admin-layout">
-                <!-- Sidebar Menu -->
                 <aside class="admin-sidebar">
                     <h3 style="font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 1rem; padding-left: 0.5rem;">Administration</h3>
                     <a href="dashboard.php" class="admin-menu-link">📊 Dashboard</a>
@@ -65,7 +64,6 @@ $reservations = $reservations_stmt->fetchAll();
                     <a href="reservations.php" class="admin-menu-link active">📅 Reservations</a>
                 </aside>
 
-                <!-- Content Area -->
                 <div class="admin-main">
                     <h1 style="margin-bottom: 0.5rem;">Reservation Management</h1>
                     <p style="color: var(--text-muted); margin-bottom: 2rem;">Track and change the status of bookings made by platform customers.</p>
@@ -82,7 +80,6 @@ $reservations = $reservations_stmt->fetchAll();
                         </div>
                     <?php endif; ?>
 
-                    <!-- Reservations Table -->
                     <div class="table-responsive">
                         <table class="data-table">
                             <thead>

@@ -2,11 +2,11 @@
 require_once 'includes/auth.php';
 require_once 'includes/db.php';
 
-// Fetch all categories
+
 $categories_stmt = $pdo->query("SELECT * FROM categories");
 $categories = $categories_stmt->fetchAll();
 
-// Fetch 4 featured services
+
 $services_stmt = $pdo->query("
     SELECT s.*, c.name as category_name 
     FROM services s 
@@ -27,7 +27,7 @@ $featured_services = $services_stmt->fetchAll();
     <?php include 'includes/navbar.php'; ?>
 
     <main class="main-content">
-        <!-- Hero Section -->
+       
         <section class="hero">
             <div class="container">
                 <h1 class="hero-title">Expert Local Services, Reserved Instantly</h1>
@@ -40,13 +40,13 @@ $featured_services = $services_stmt->fetchAll();
             </div>
         </section>
 
-        <!-- Categories Section -->
+       
         <section class="container" style="margin-bottom: 4rem;">
             <h2 style="text-align: center; margin-bottom: 2rem;">Explore Categories</h2>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
                 <?php foreach ($categories as $category): ?>
                     <?php
-                    // Map emoji for categories based on name
+             
                     $emoji = '🛠️';
                     if (stripos($category['name'], 'clean') !== false) $emoji = '🧹';
                     elseif (stripos($category['name'], 'plumb') !== false) $emoji = '🚰';
@@ -62,7 +62,7 @@ $featured_services = $services_stmt->fetchAll();
             </div>
         </section>
 
-        <!-- Featured Services Section -->
+   
         <section class="container services-section">
             <div class="section-header">
                 <div>

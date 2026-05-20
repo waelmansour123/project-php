@@ -40,7 +40,7 @@ if ($action === 'delete' && $edit_id > 0) {
     exit;
 }
 
-// Handle User Editing Form POST
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
     $user_id = (int)$_POST['user_id'];
     $name = sanitizeInput($_POST['name'] ?? '');
@@ -55,20 +55,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
     } elseif (!in_array($role, ['user', 'admin'])) {
         $error = "Invalid user role selected.";
     } else {
-        // Check for email collision
+      
         $check_stmt = $pdo->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
         $check_stmt->execute([$email, $user_id]);
         if ($check_stmt->fetch()) {
             $error = "The email address is already in use by another user.";
         } else {
-            // Update database
+      
             $update_stmt = $pdo->prepare("
                 UPDATE users 
                 SET name = ?, email = ?, phone = ?, role = ? 
                 WHERE id = ?
             ");
             if ($update_stmt->execute([$name, $email, $phone, $role, $user_id])) {
-                // If editing self, refresh role in session
+            
                 if ($user_id === $current_admin_id) {
                     $_SESSION['user_role'] = $role;
                     $_SESSION['user_name'] = $name;
@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
     }
 }
 
-// Load session alerts
+
 if (isset($_SESSION['admin_msg_success'])) {
     $success = $_SESSION['admin_msg_success'];
     unset($_SESSION['admin_msg_success']);
@@ -93,11 +93,11 @@ if (isset($_SESSION['admin_msg_error'])) {
     unset($_SESSION['admin_msg_error']);
 }
 
-// Fetch all users
+
 $users_stmt = $pdo->query("SELECT * FROM users ORDER BY name ASC");
 $users = $users_stmt->fetchAll();
 
-// Fetch single user details if editing
+
 $edit_user = null;
 if ($action === 'edit' && $edit_id > 0) {
     $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
@@ -119,7 +119,7 @@ if ($action === 'edit' && $edit_id > 0) {
     <main class="main-content">
         <div class="container">
             <div class="admin-layout">
-                <!-- Sidebar Menu -->
+            
                 <aside class="admin-sidebar">
                     <h3 style="font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 1rem; padding-left: 0.5rem;">Administration</h3>
                     <a href="dashboard.php" class="admin-menu-link">📊 Dashboard</a>
@@ -128,7 +128,7 @@ if ($action === 'edit' && $edit_id > 0) {
                     <a href="reservations.php" class="admin-menu-link">📅 Reservations</a>
                 </aside>
 
-                <!-- Dashboard Content Area -->
+       
                 <div class="admin-main">
                     
                     <?php if (!empty($success)): ?>
@@ -143,7 +143,7 @@ if ($action === 'edit' && $edit_id > 0) {
                         </div>
                     <?php endif; ?>
 
-                    <!-- View Edit Form block -->
+              
                     <?php if ($action === 'edit' && $edit_user): ?>
                         <div class="profile-details" style="max-width: 600px; margin-bottom: 2rem;">
                             <h2 style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Edit User Account</h2>
@@ -185,7 +185,7 @@ if ($action === 'edit' && $edit_id > 0) {
                     <h1 style="margin-bottom: 0.5rem;">User Management</h1>
                     <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Display and control registered platform users.</p>
 
-                    <!-- Users List Table -->
+               
                     <div class="table-responsive">
                         <table class="data-table">
                             <thead>

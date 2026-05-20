@@ -2,7 +2,7 @@
 require_once 'includes/auth.php';
 require_once 'includes/db.php';
 
-// Route protection
+
 requireLogin();
 
 $user_id = $_SESSION['user_id'];
@@ -14,11 +14,10 @@ if (isset($_SESSION['booking_success'])) {
     unset($_SESSION['booking_success']);
 }
 
-// Handle Reservation Cancellation
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_reservation'])) {
     $reservation_id = (int)$_POST['reservation_id'];
 
-    // Check if reservation exists, belongs to the current user, and is not already Cancelled or Completed
     $check_stmt = $pdo->prepare("
         SELECT status FROM reservations 
         WHERE id = ? AND user_id = ?
@@ -32,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_reservation'])
         } elseif ($res['status'] === 'Completed') {
             $error = 'Completed reservations cannot be cancelled.';
         } else {
-            // Update reservation status to Cancelled
+
             $update_stmt = $pdo->prepare("
                 UPDATE reservations 
                 SET status = 'Cancelled' 
@@ -48,8 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_reservation'])
         $error = 'Reservation not found or unauthorized access.';
     }
 }
-
-// Fetch all reservations for the logged-in user
 $reservations_stmt = $pdo->prepare("
     SELECT r.*, s.title as service_title, s.price as service_price, s.image as service_image 
     FROM reservations r 

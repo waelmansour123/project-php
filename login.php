@@ -15,7 +15,7 @@ if (isLoggedIn()) {
 $error = '';
 $success = '';
 
-// Check for registration success message
+// tetfa9ed registration message
 if (isset($_SESSION['reg_success'])) {
     $success = $_SESSION['reg_success'];
     unset($_SESSION['reg_success']);
@@ -28,18 +28,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($email) || empty($password)) {
         $error = 'Please enter both email and password.';
     } else {
-        // Fetch user from DB
         $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch();
         
         if ($user && password_verify($password, $user['password'])) {
-            // Setup Session
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_role'] = $user['role'];
             $_SESSION['user_name'] = $user['name'];
             
-            // Redirect based on role
             if ($user['role'] === 'admin') {
                 header("Location: admin/dashboard.php");
             } else {

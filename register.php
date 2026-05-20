@@ -2,7 +2,7 @@
 require_once 'includes/auth.php';
 require_once 'includes/db.php';
 
-// Redirect if already logged in
+
 if (isLoggedIn()) {
     header("Location: index.php");
     exit;
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
     
-    // Server-side validation
+
     if (empty($name) || empty($email) || empty($password)) {
         $error = 'Please fill in all required fields.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -28,13 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($password !== $confirm_password) {
         $error = 'Passwords do not match.';
     } else {
-        // Check if email already exists
         $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
         $stmt->execute([$email]);
         if ($stmt->fetch()) {
             $error = 'This email address is already registered.';
         } else {
-            // Handle Profile Image Upload
             $profile_image_name = null;
             if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
                 $file = $_FILES['profile_image'];
@@ -42,15 +40,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $file_name_parts = explode('.', $file['name']);
                 $file_ext = strtolower(end($file_name_parts));
                 
-                // Validate file extension
                 if (!in_array($file_ext, $allowed_extensions)) {
                     $error = 'Invalid image format. Allowed formats: JPG, JPEG, PNG, GIF.';
                 } 
-                // Validate file size (limit to 2MB)
                 elseif ($file['size'] > 2 * 1024 * 1024) {
                     $error = 'Profile image must be smaller than 2MB.';
                 } else {
-                    // Check if directory exists
                     $upload_dir = 'uploads/users/';
                     if (!file_exists($upload_dir)) {
                         mkdir($upload_dir, 0777, true);
@@ -65,10 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
 
-            // Insert into Database if no errors
             if (empty($error)) {
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-                $role = 'user'; // Default registration role
+                $role = 'user';
 
                 $insert_stmt = $pdo->prepare("INSERT INTO users (name, email, password, phone, profile_image, role) VALUES (?, ?, ?, ?, ?, ?)");
                 

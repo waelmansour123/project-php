@@ -2,14 +2,14 @@
 require_once 'includes/auth.php';
 require_once 'includes/db.php';
 
-// Route protection
+
 requireLogin();
 
 $user_id = $_SESSION['user_id'];
 $error = '';
 $success = '';
 
-// Fetch current user details
+
 $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
@@ -18,27 +18,26 @@ if (!$user) {
     die("User not found.");
 }
 
-// Handle Profile Updates
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = sanitizeInput($_POST['name'] ?? '');
     $email = sanitizeInput($_POST['email'] ?? '');
     $phone = sanitizeInput($_POST['phone'] ?? '');
     
-    // Server-side validation
+
     if (empty($name) || empty($email)) {
         $error = 'Name and Email are required.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = 'Please enter a valid email address.';
     } else {
-        // Check if email already exists for another user
+
         $check_stmt = $pdo->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
         $check_stmt->execute([$email, $user_id]);
         
         if ($check_stmt->fetch()) {
             $error = 'This email address is already in use by another account.';
         } else {
-            // Handle Profile Image Upload
-            $profile_image_name = $user['profile_image']; // Default to current image
+
+            $profile_image_name = $user['profile_image']; 
             
             if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
                 $file = $_FILES['profile_image'];
@@ -46,11 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $file_name_parts = explode('.', $file['name']);
                 $file_ext = strtolower(end($file_name_parts));
                 
-                // Validate file extension
+        
                 if (!in_array($file_ext, $allowed_extensions)) {
                     $error = 'Invalid image format. Allowed formats: JPG, JPEG, PNG, GIF.';
                 } 
-                // Validate file size (limit to 2MB)
+             
                 elseif ($file['size'] > 2 * 1024 * 1024) {
                     $error = 'Profile image must be smaller than 2MB.';
                 } else {
@@ -59,12 +58,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         mkdir($upload_dir, 0777, true);
                     }
                     
-                    // Generate unique filename
+                    
                     $profile_image_name = uniqid('user_', true) . '.' . $file_ext;
                     $dest_path = $upload_dir . $profile_image_name;
                     
                     if (move_uploaded_file($file['tmp_name'], $dest_path)) {
-                        // Delete old profile image if it exists and is not the default
+                
                         if (!empty($user['profile_image']) && file_exists($upload_dir . $user['profile_image'])) {
                             unlink($upload_dir . $user['profile_image']);
                         }
@@ -74,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
 
-            // Update Database if no errors
+          
             if (empty($error)) {
                 $update_stmt = $pdo->prepare("
                     UPDATE users 
@@ -85,10 +84,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($update_stmt->execute([$name, $email, $phone, $profile_image_name, $user_id])) {
                     $success = 'Profile updated successfully!';
                     
-                    // Refresh session variables
+                   
                     $_SESSION['user_name'] = $name;
-                    
-                    // Refresh user data array
+
                     $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
                     $stmt->execute([$user_id]);
                     $user = $stmt->fetch();
@@ -129,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
 
             <div class="profile-layout">
-                <!-- User Summary Card -->
+     
                 <div class="profile-card">
                     <div class="profile-avatar-container">
                         <?php
@@ -151,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </p>
                 </div>
 
-                <!-- Update Form Card -->
+            
                 <div class="profile-details">
                     <h3 style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Personal Information</h3>
                     

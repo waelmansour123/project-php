@@ -2,7 +2,7 @@
 require_once 'includes/auth.php';
 require_once 'includes/db.php';
 
-// Route protection
+
 requireLogin();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Check if the service exists
+
     $service_stmt = $pdo->prepare("SELECT id FROM services WHERE id = ?");
     $service_stmt->execute([$service_id]);
     if (!$service_stmt->fetch()) {
@@ -25,7 +25,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Validate date format and ensure it's in the future
     $current_time = time();
     $booking_time = strtotime($reservation_date);
 
@@ -35,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Insert Reservation into Database
+  
     $insert_stmt = $pdo->prepare("
         INSERT INTO reservations (user_id, service_id, reservation_date, status) 
         VALUES (?, ?, ?, 'Pending')
@@ -51,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 } else {
-    // If someone accesses reserve.php directly without POST
     header("Location: services.php");
     exit;
 }

@@ -46,7 +46,7 @@ $recent_reservations = $recent_stmt->fetchAll();
     <main class="main-content">
         <div class="container">
             <div class="admin-layout">
-                <!-- Sidebar Menu -->
+                
                 <aside class="admin-sidebar">
                     <h3 style="font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 1rem; padding-left: 0.5rem;">Administration</h3>
                     <a href="dashboard.php" class="admin-menu-link active">📊 Dashboard</a>
@@ -55,12 +55,12 @@ $recent_reservations = $recent_stmt->fetchAll();
                     <a href="reservations.php" class="admin-menu-link">📅 Reservations</a>
                 </aside>
 
-                <!-- Dashboard Content Area -->
+                
                 <div class="admin-main">
                     <h1 style="margin-bottom: 0.5rem;">Admin Dashboard</h1>
                     <p style="color: var(--text-muted); margin-bottom: 2rem;">Overview of platform performance and statistics.</p>
 
-                    <!-- Stats Cards -->
+                   
                     <div class="stats-grid">
                         <div class="stat-card">
                             <div class="stat-icon users">👥</div>
@@ -88,7 +88,7 @@ $recent_reservations = $recent_stmt->fetchAll();
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem; flex-wrap: wrap;">
-                        <!-- Most Booked Services -->
+                       
                         <div style="background-color: var(--white); padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow);">
                             <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">🔥 Most Booked Services</h2>
                             

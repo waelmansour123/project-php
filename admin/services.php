@@ -2,7 +2,6 @@
 require_once '../includes/auth.php';
 require_once '../includes/db.php';
 
-// Route protection
 requireAdmin();
 
 $success = '';
@@ -11,18 +10,18 @@ $error = '';
 $action = sanitizeInput($_GET['action'] ?? '');
 $edit_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-// Fetch all categories for form selector
+
 $cat_stmt = $pdo->query("SELECT * FROM categories ORDER BY name ASC");
 $categories = $cat_stmt->fetchAll();
 
-// Handle Service Deletion
+
 if ($action === 'delete' && $edit_id > 0) {
     $stmt = $pdo->prepare("SELECT image FROM services WHERE id = ?");
     $stmt->execute([$edit_id]);
     $service = $stmt->fetch();
     
     if ($service) {
-        // Delete image file from upload directory
+       
         if (!empty($service['image']) && file_exists('../uploads/services/' . $service['image'])) {
             unlink('../uploads/services/' . $service['image']);
         }
@@ -40,22 +39,22 @@ if ($action === 'delete' && $edit_id > 0) {
     exit;
 }
 
-// Handle Service Addition & Editing POST
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = sanitizeInput($_POST['title'] ?? '');
     $description = sanitizeInput($_POST['description'] ?? '');
     $price = (float)($_POST['price'] ?? 0.00);
     $category_id = (int)($_POST['category_id'] ?? 0);
     
-    // Check if adding or editing
+  
     $is_edit = isset($_POST['service_id']) && (int)$_POST['service_id'] > 0;
     $service_id = $is_edit ? (int)$_POST['service_id'] : 0;
 
-    // Validate inputs
+
     if (empty($title) || empty($description) || $price <= 0 || $category_id <= 0) {
         $error = "Please fill in all fields with valid details.";
     } else {
-        // Handle Image Upload
+       
         $image_name = '';
         $upload_image = false;
         
@@ -81,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (move_uploaded_file($file['tmp_name'], $dest_path)) {
                     $upload_image = true;
                     
-                    // If editing, delete old service image
+                    
                     if ($is_edit) {
                         $old_img_stmt = $pdo->prepare("SELECT image FROM services WHERE id = ?");
                         $old_img_stmt->execute([$service_id]);
@@ -95,14 +94,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         } elseif (!$is_edit) {
-            // Image upload is required for new services
+           
             $error = "Please upload an image for the service.";
         }
 
-        // Database logic
+   
         if (empty($error)) {
             if ($is_edit) {
-                // Edit Service
+           
                 if ($upload_image) {
                     $update_stmt = $pdo->prepare("
                         UPDATE services 
@@ -127,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $error = "Failed to update service.";
                 }
             } else {
-                // Add Service
+              
                 $insert_stmt = $pdo->prepare("
                     INSERT INTO services (title, description, price, category_id, image) 
                     VALUES (?, ?, ?, ?, ?)
@@ -144,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Load session messages
+
 if (isset($_SESSION['admin_services_success'])) {
     $success = $_SESSION['admin_services_success'];
     unset($_SESSION['admin_services_success']);
@@ -154,7 +153,7 @@ if (isset($_SESSION['admin_services_error'])) {
     unset($_SESSION['admin_services_error']);
 }
 
-// Fetch all services with categories
+
 $services_stmt = $pdo->query("
     SELECT s.*, c.name as category_name 
     FROM services s 
@@ -163,7 +162,7 @@ $services_stmt = $pdo->query("
 ");
 $services = $services_stmt->fetchAll();
 
-// Fetch single service for edit page loading
+
 $edit_service = null;
 if ($action === 'edit' && $edit_id > 0) {
     $stmt = $pdo->prepare("SELECT * FROM services WHERE id = ?");
@@ -185,7 +184,7 @@ if ($action === 'edit' && $edit_id > 0) {
     <main class="main-content">
         <div class="container">
             <div class="admin-layout">
-                <!-- Sidebar Menu -->
+          
                 <aside class="admin-sidebar">
                     <h3 style="font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 1rem; padding-left: 0.5rem;">Administration</h3>
                     <a href="dashboard.php" class="admin-menu-link">📊 Dashboard</a>
@@ -194,7 +193,7 @@ if ($action === 'edit' && $edit_id > 0) {
                     <a href="reservations.php" class="admin-menu-link">📅 Reservations</a>
                 </aside>
 
-                <!-- Content Area -->
+          
                 <div class="admin-main">
                     
                     <?php if (!empty($success)): ?>
@@ -209,7 +208,7 @@ if ($action === 'edit' && $edit_id > 0) {
                         </div>
                     <?php endif; ?>
 
-                    <!-- Action form (Add or Edit) -->
+                  
                     <?php if ($action === 'add' || ($action === 'edit' && $edit_service)): ?>
                         <div class="profile-details" style="margin-bottom: 2.5rem; max-width: 700px;">
                             <h2 style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
@@ -278,7 +277,7 @@ if ($action === 'edit' && $edit_id > 0) {
                         </div>
                     <?php endif; ?>
 
-                    <!-- Services View Header -->
+             
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                         <div>
                             <h1 style="margin: 0; font-size: 1.75rem;">Service Management</h1>
@@ -289,7 +288,7 @@ if ($action === 'edit' && $edit_id > 0) {
                         <?php endif; ?>
                     </div>
 
-                    <!-- Services Grid/Table -->
+              
                     <div class="table-responsive">
                         <table class="data-table">
                             <thead>

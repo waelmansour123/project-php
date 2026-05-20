@@ -1,7 +1,6 @@
-// SkillHub Platform Javascript
+
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // Mobile Navigation Toggle
+
     const navToggle = document.getElementById('navToggle');
     const navLinks = document.querySelector('.nav-links');
     
@@ -9,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
         navToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
             
-            // Toggle hamburger icon animation
             const spans = navToggle.querySelectorAll('span');
             if (navLinks.classList.contains('active')) {
                 spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
@@ -23,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Auto-Dismiss Alerts after 5 seconds
+
     const alerts = document.querySelectorAll('.alert');
     alerts.forEach(alert => {
         setTimeout(() => {
@@ -35,10 +33,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 5000);
     });
 
-    // Confirmation dialog for hazardous actions
+
     const deleteButtons = document.querySelectorAll('.btn-confirm-delete, .btn-danger');
     deleteButtons.forEach(button => {
-        // Exclude simple forms that don't need cancellation confirmation
+      
         if (button.tagName === 'A' || button.tagName === 'BUTTON') {
             button.addEventListener('click', (e) => {
                 const message = button.getAttribute('data-confirm') || 'Are you absolutely sure you want to perform this action?';
@@ -49,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Register password match validation
+
     const registerForm = document.querySelector('.register-form');
     if (registerForm) {
         const passwordInput = document.getElementById('password');

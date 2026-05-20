@@ -9,7 +9,7 @@ if ($service_id <= 0) {
     exit;
 }
 
-// Fetch service details
+
 $stmt = $pdo->prepare("
     SELECT s.*, c.name as category_name 
     FROM services s 
@@ -26,7 +26,6 @@ if (!$service) {
 $error = '';
 $success = '';
 
-// Handle review submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_review'])) {
     requireLogin();
     
@@ -48,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_review'])) {
     }
 }
 
-// Fetch all reviews for this service
+
 $reviews_stmt = $pdo->prepare("
     SELECT r.*, u.name as user_name, u.profile_image as user_image 
     FROM reviews r 
@@ -85,7 +84,6 @@ $reviews = $reviews_stmt->fetchAll();
             <?php endif; ?>
 
             <div class="details-layout">
-                <!-- Main Service Information -->
                 <div class="details-main">
                     <div class="details-banner">
                         <?php
@@ -125,7 +123,6 @@ $reviews = $reviews_stmt->fetchAll();
                         <h2>Customer Reviews</h2>
                         
                         <?php if (isLoggedIn()): ?>
-                            <!-- Write a review form -->
                             <form action="service-details.php?id=<?php echo $service_id; ?>" method="POST" class="review-form">
                                 <h4 style="margin-bottom: 0.5rem;">Write a Review</h4>
                                 
@@ -153,7 +150,8 @@ $reviews = $reviews_stmt->fetchAll();
                             </p>
                         <?php endif; ?>
 
-                        <!-- Reviews List -->
+
+
                         <div class="reviews-list">
                             <?php if (empty($reviews)): ?>
                                 <p style="color: var(--text-muted); font-style: italic;">No reviews have been written for this service yet.</p>
@@ -164,7 +162,7 @@ $reviews = $reviews_stmt->fetchAll();
                                             <div class="review-author">
                                                 <?php
                                                 $author_img = ($review['user_image'] && file_exists('uploads/users/' . $review['review_image'])) ? 'uploads/users/' . $review['review_image'] : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'; // Fallback online
-                                                // Note: we fetch user_image which contains users.profile_image from join
+                                                
                                                 $author_img = ($review['user_image'] && file_exists('uploads/users/' . $review['user_image'])) ? 'uploads/users/' . $review['user_image'] : 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
                                                 ?>
                                                 <img src="<?php echo htmlspecialchars($author_img); ?>" alt="User profile" class="review-author-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
@@ -187,7 +185,7 @@ $reviews = $reviews_stmt->fetchAll();
                     </div>
                 </div>
 
-                <!-- Sidebar Booking Panel -->
+
                 <div class="details-sidebar">
                     <div class="sidebar-card">
                         <div class="price-box">
